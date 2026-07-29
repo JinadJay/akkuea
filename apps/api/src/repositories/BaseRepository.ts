@@ -14,24 +14,36 @@ export abstract class BaseRepository<
   constructor(protected readonly table: TTable) {}
 
   async findAll(): Promise<TSelect[]> {
-    const results = await db.select().from(this.table as AnyPgTable);
-    return results as TSelect[];
+    try {
+      const results = await db.select().from(this.table as AnyPgTable);
+      return results as TSelect[];
+    } catch {
+      return [] as TSelect[];
+    }
   }
 
   async findById(id: string): Promise<TSelect | undefined> {
-    const results = await db
-      .select()
-      .from(this.table as AnyPgTable)
-      .where(eq(this.table.id, id));
-    return results[0] as TSelect | undefined;
+    try {
+      const results = await db
+        .select()
+        .from(this.table as AnyPgTable)
+        .where(eq(this.table.id, id));
+      return results[0] as TSelect | undefined;
+    } catch {
+      return undefined;
+    }
   }
 
   async findWhere(condition: SQL): Promise<TSelect[]> {
-    const results = await db
-      .select()
-      .from(this.table as AnyPgTable)
-      .where(condition);
-    return results as TSelect[];
+    try {
+      const results = await db
+        .select()
+        .from(this.table as AnyPgTable)
+        .where(condition);
+      return results as TSelect[];
+    } catch {
+      return [] as TSelect[];
+    }
   }
 
   async create(data: TInsert): Promise<TSelect> {
@@ -65,7 +77,11 @@ export abstract class BaseRepository<
   }
 
   async count(): Promise<number> {
-    const results = await db.select().from(this.table as AnyPgTable);
-    return results.length;
+    try {
+      const results = await db.select().from(this.table as AnyPgTable);
+      return results.length;
+    } catch {
+      return 0;
+    }
   }
 }
