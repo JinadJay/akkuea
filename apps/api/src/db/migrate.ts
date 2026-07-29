@@ -2,6 +2,7 @@ import { migrate } from 'drizzle-orm/postgres-js/migrator';
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
 
+// Retry database readiness probes so CI can tolerate the Postgres service still warming up.
 export interface MigrationOptions {
   attempts?: number;
   delayMs?: number;
